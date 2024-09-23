@@ -15,6 +15,13 @@ router.get("/users/:id", UserController.findById)
 //post
 router.post("/users", UserController.save);
 
+//put
+router.put("/users/:id",UserController.update);
+
+//delete
+router.delete("/users/:id", UserController.delete);
+
+
 
 //exportação das rotas
 export default router;  

@@ -10,24 +10,12 @@ class UserController {
   static teste(request, response) {
     response.send({ message: "Hello World" })
   }
+
+  //get
   static findAll(request, response) {
-    response.json({ users: usuarios })
+    response.status(200).json({ users: usuarios })
   }
-
-  static save(request, response) {
-    const { name, email, phone } = request.body;
-
-    let user = {
-      //at(-1) = ultimo usuario
-      id: usuarios.at(-1).id + 1,
-      name,
-      email,
-      phone,
-    }
-    usuarios.push(user);
-    response.json({ user });
-  }
-
+//get
   static findById(request, response) {
     const { id } = request.params;
 
@@ -40,6 +28,66 @@ class UserController {
     response.json({ user });
 
   }
+
+//post
+  static save(request, response) {
+    const { name, email, phone } = request.body;
+
+    let user = {
+      //at(-1) = ultimo usuario
+      id: usuarios.at(-1).id + 1,
+      name,
+      email,
+      phone,
+    }
+    usuarios.push(user);
+    response.status.json({ user });
+  }
+
+  //PUT
+  static update(request, response) {
+    //pegando o parametro da URL
+    const { id } = request.params;
+    //pegando o body(payload)
+    const { name, email, phone } = request.body
+
+    //procurando o id do usuario no array e comparando se é igual ao //id// da requisição.
+    const idUserFound = usuarios.findIndex((user) => user.id === parseInt(id));
+    //Se não encontrou o id igual do parametro, mostra o 404.
+    if (idUserFound == -1){
+      response.status(404).json({message: "Usuario não encontrado"});
+      return;
+    }
+
+    //se encontrou, alterar com os dados passados.
+    usuarios[idUserFound] = {id, name, email, phone}
+    //e retorna a resposta
+    response.status(200).json({user: usuarios[idUserFound]});
+
+    //splice(para o delete)
+
+  }
+
+   //splice(para o DELETE)
+static delete(request, response) {
+  //pegando o parametro da URL
+  const { id } = request.params;
+
+  //procurando o id do usuario no array
+  const idUserFound = usuarios.findIndex((user) => user.id === parseInt(id));
+
+  //Se não encontrou o id igual do parametro, mostra o 404.
+  if (idUserFound === -1) {
+    response.status(404).json({ message: "Usuario não encontrado" });
+    return;
+  }
+
+  //se encontrou, remove o usuário
+  usuarios.splice(idUserFound, 1);
+
+  //responde com status 200 e uma mensagem de sucesso
+  response.status(200).json({ message: "Usuario removido com sucesso" });
+}
 
 }
 
